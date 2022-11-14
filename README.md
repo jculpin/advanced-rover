@@ -10,6 +10,8 @@ e.g
 3. 23m
 4. Left
 5. 4m
+
+
 The above set of commands would cause the rover to report back position 4624 north.
 The next set of commands would then continue from this square. Please note that the rover
 cannot go out of this area so will halt all commands when it has reached its perimeter.
