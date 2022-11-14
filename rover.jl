@@ -27,14 +27,13 @@ compass = ["North", "East", "South", "West"]
 
 mutable struct Rover
     # Object to represent the position of the rover
-    latitude::UInt
-    longitude::UInt
-    orientation::UInt
-    halted::Bool
+    latitude::Int
+    longitude::Int
+    orientation::Int
 
     function Rover()
         # Constructor for the rover object
-        new(0,1,3,false)   #= Always start in first square facing south =#
+        new(0,1,3)   #= Always start in first square facing south =#
     end
 end
 
@@ -45,88 +44,63 @@ end
 
 function rotate!(rover::Rover, direction)
     # Represent "north" as 1, "east as 2 etc
-    
-    println(direction)
-    println("Rover is " , rover.orientation)
     if(direction == "LEFT")
         # counter-clockwise turn
-        rover.orientation -= 1;
+        rover.orientation -= 1
     else
         # clockwise turn
-        rover.orientation += 1;
+        rover.orientation += 1
     end
     # check for "overflow"
     if(rover.orientation == 0)
-        rover.orientation = 4;
+        rover.orientation = 4
     end
     if(rover.orientation == 5)
-        rover.orientation = 1;
+        rover.orientation = 1
     end
 end
 
 function move!(rover::Rover, distance)  
-    if(rover.orientation == 1)
-        move_north!(rover, distance);
-    end
-    if(rover.orientation == 2)
-        move_east!(rover, distance);
-    end
-    if(rover.orientation == 3)
-        move_south!(rover, distance);
-    end
-    if(rover.orientation == 4)
-        move_west!(rover, distance);
-    end
-end
-
-function move_north!(rover::Rover, distance)
-    new_position = 0
-    if distance <= rover.latitude
-        new_position = rover.latitude - distance;
+    if(rover.orientation == 1 || rover.orientation == 3)
+        move_north_south!(rover, distance)
     else
-        # Have hit the boundary, so halt the rover and set sensible location
-        new_postion = 0;
-        rover.halted = true;
+        move_east_west!(rover, distance)
     end
-    rover.latitude = new_position;
 end
 
-function move_east!(rover::Rover, distance)
+function move_north_south!(rover::Rover, distance)
     new_position = 0
-    if distance <= 100 - rover.longitude
-        new_position = rover.longitude + distance;
-    else
-        # Have hit the boundary, so halt the rover and set sensible location
-        new_position = 100;
-        rover.halted = true;
+    if rover.orientation == 1
+        distance = 0 - distance
     end
-    rover.longitude = new_position;
+    new_position = rover.latitude + distance
+    # Check for bounday hit
+    # Set sensible location
+    if new_position < 0
+        new_position = 0
+    end
+    if new_position > 99
+        new_position = 99
+    end
+    rover.latitude = new_position
 end
 
-function move_south!(rover::Rover, distance)
+function move_east_west!(rover::Rover, distance)
     new_position = 0
-    if distance <= 99 - rover.latitude
-        new_position = rover.latitude + distance;
-    else
-        # Have hit the boundary, so halt the rover and set sensible location
-        new_position = 99;
-        rover.halted = true;
+    if rover.orientation == 4
+        distance = 0 - distance
     end
-    rover.latitude = new_position;
-end
-
-function move_west!(rover::Rover, distance)
-    new_position = 0
-    if distance <= rover.longitude 
-        new_position = rover.longitude - distance;
-    else
-        # Have hit the boundary, so halt the rover and set sensible location
-        new_position = 0;
-        rover.halted = true;
+    new_position = rover.longitude + distance
+    # Check for bounday hit
+    # Set sensible location
+    if new_position < 1
+        new_position = 1
     end
-    rover.longitude = new_position;
+    if new_position > 100
+        new_position = 100
+    end
+    rover.longitude = new_position
 end
-
 
 function start_rover()
     # Entry point for program.  Create a Rover object
@@ -138,12 +112,13 @@ function start_rover()
 
     println(rover)
     # Now prompt for commands.  Exit if no commands are entered
-    while rover.halted == false
+    while true
         print("Enter Rover commands:")
         command_string = readline()
         commands = split(command_string)
         if length(commands) == 0
-            rover.halted = true
+            println("Rover halted")
+            return
         end
         valid_commands = validate_commands(commands)
         #= valid_commands is an array of mixed types, set by validate_commands
@@ -159,7 +134,6 @@ function start_rover()
         # Display rover location 
         println(rover)
     end
-    println("Rover halted")
 end
 
 function validate_commands(commands)
