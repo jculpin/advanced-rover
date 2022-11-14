@@ -44,7 +44,10 @@ function Base.show(io::IO, rover::Rover)
 end
 
 function rotate!(rover::Rover, direction)
-    # Represent "north" as 1, "east as 2 etc 
+    # Represent "north" as 1, "east as 2 etc
+    
+    println(direction)
+    println("Rover is " , rover.orientation)
     if(direction == "LEFT")
         # counter-clockwise turn
         rover.orientation -= 1;
@@ -54,7 +57,7 @@ function rotate!(rover::Rover, direction)
     end
     # check for "overflow"
     if(rover.orientation == 0)
-        rover.orientation = 1;
+        rover.orientation = 4;
     end
     if(rover.orientation == 5)
         rover.orientation = 1;
@@ -115,7 +118,7 @@ end
 function move_west!(rover::Rover, distance)
     new_position = 0
     if distance <= rover.longitude 
-        new_position = rover.longitude + distance;
+        new_position = rover.longitude - distance;
     else
         # Have hit the boundary, so halt the rover and set sensible location
         new_position = 0;
