@@ -67,6 +67,7 @@ function move!(rover::Rover, distance)
     else
         hit_boundary = move_east_west!(rover, distance)
     end
+    return hit_boundary
 end
 
 function move_north_south!(rover::Rover, distance)
