@@ -39,7 +39,7 @@ end
 
 function Base.show(io::IO, rover::Rover)
     # Add new method to Base.show to print representation of the position of the rover
-    @printf(io, "Current position: %d%d - %s" , rover.latitude, rover.longitude, compass[rover.orientation])
+    @printf(io, "Current position: %d - %s" , rover.latitude * 100 + rover.longitude, compass[rover.orientation])
 end
 
 function rotate!(rover::Rover, direction)
@@ -61,15 +61,17 @@ function rotate!(rover::Rover, direction)
 end
 
 function move!(rover::Rover, distance)  
+    hit_boundary = false
     if(rover.orientation == 1 || rover.orientation == 3)
-        move_north_south!(rover, distance)
+        hit_boundary = move_north_south!(rover, distance)
     else
-        move_east_west!(rover, distance)
+        hit_boundary = move_east_west!(rover, distance)
     end
 end
 
 function move_north_south!(rover::Rover, distance)
     new_position = 0
+    hit_boundary = false
     if rover.orientation == 1
         distance = 0 - distance
     end
@@ -78,15 +80,19 @@ function move_north_south!(rover::Rover, distance)
     # Set sensible location
     if new_position < 0
         new_position = 0
+        hit_boundary = true
     end
     if new_position > 99
         new_position = 99
+        hit_boundary = true
     end
     rover.latitude = new_position
+    return hit_boundary
 end
 
 function move_east_west!(rover::Rover, distance)
     new_position = 0
+    hit_boundary = false
     if rover.orientation == 4
         distance = 0 - distance
     end
@@ -95,11 +101,14 @@ function move_east_west!(rover::Rover, distance)
     # Set sensible location
     if new_position < 1
         new_position = 1
+        hit_boundary = true
     end
     if new_position > 100
         new_position = 100
+        hit_boundary =true
     end
     rover.longitude = new_position
+    return hit_boundary
 end
 
 function start_rover()
@@ -109,8 +118,10 @@ function start_rover()
     commands = []
     command_string = ""
     valid_commands = []
+    hit_boundary = false
 
     println(rover)
+    
     # Now prompt for commands.  Exit if no commands are entered
     while true
         print("Enter Rover commands:")
@@ -126,9 +137,13 @@ function start_rover()
         =#
         for cmd ∈ valid_commands
             if typeof(cmd) == Int64
-                move!(rover,cmd)    
+                hit_boundary = move!(rover,cmd)    
             else
                 rotate!(rover, uppercase(cmd))
+            end
+            if hit_boundary == true
+                println("Boundary hit.  Rover has halted")
+                break
             end
         end
         # Display rover location 
