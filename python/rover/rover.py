@@ -38,12 +38,13 @@ class Rover():
         self.latitude = 0
         self.longitude = 1
         self.orientation = 3
-        self.rover_commands()
+        if __name__ == "__main__":
+            self.rover_commands()
 
     def rotate(self,direction):
-        if direction == "LEFT":
+        if direction.upper() == "LEFT":
             self.orientation -= 1
-        else:
+        elif direction.upper() == "RIGHT":
             self.orientation += 1
         if self.orientation == 0:
             self.orientation = 4
