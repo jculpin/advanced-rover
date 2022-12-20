@@ -33,6 +33,13 @@ class Rover():
         South = 3
         West = 4
 
+    def __init__(self):
+        # Entry point for program.  Create a Rover object
+        self.latitude = 0
+        self.longitude = 1
+        self.orientation = 3
+        self.rover_commands()
+
     def rotate(self,direction):
         if direction == "LEFT":
             self.orientation -= 1
@@ -112,20 +119,13 @@ class Rover():
                 return []      
         return valid_commands
 
-    def __init__(self):
-        # Entry point for program.  Create a Rover object
-        self.latitude = 0
-        self.longitude = 1
-        self.orientation = 3
-        self.print_rover()
-        self.rover_commands()
-
     def rover_commands(self):
         commands = []
         command_string = ""
         valid_commands = []
         hit_boundary = False
-
+        self.print_rover()
+        
         # Prompt for commands.  Exit if no commands are entered
         while True:
             command_string = input("Enter Rover commands:")
