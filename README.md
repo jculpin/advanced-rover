@@ -1,3 +1,4 @@
+THIS LINE SHOULD NOT BE HERE
 Can you design an application to control the movements of the next rover to go up to Mars.
 You have been told that the surface area on mars is 100m x 100m where they have
 numbered the areas 1 through to 100 (please see diagram 1). The rover starts facing
