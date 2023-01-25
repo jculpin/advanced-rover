@@ -34,7 +34,6 @@ class Rover():
         West = 4
 
     def __init__(self):
-        # Entry point for program.  Create a Rover object
         self.latitude = 0
         self.longitude = 1
         self.orientation = 3

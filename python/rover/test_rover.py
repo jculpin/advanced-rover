@@ -28,3 +28,10 @@ class test_rover(unittest.TestCase):
         self.assertEqual(r.longitude, 24)
         self.assertEqual(r.latitude, 46) 
         self.assertEqual(r.orientation, 1)
+
+    def test_five(self):
+        r = rover.Rover()
+        r.move_north_south(100)
+        self.assertEqual(r.longitude,1)
+        self.assertEqual(r.latitude, 99)
+        self.assertEqual(r.orientation,3)
